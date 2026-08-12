@@ -1061,7 +1061,11 @@ winarm:
     SET "TOOLCHAIN=arm64-win64-vs17"
 win:
 depends:patches/build_libvpx_win.sh
+    SET "LIBVPX_SAVED_NUMBER_OF_PROCESSORS=%NUMBER_OF_PROCESSORS%"
+    SET NUMBER_OF_PROCESSORS=1
     bash --login ../patches/build_libvpx_win.sh
+    SET "NUMBER_OF_PROCESSORS=%LIBVPX_SAVED_NUMBER_OF_PROCESSORS%"
+    SET LIBVPX_SAVED_NUMBER_OF_PROCESSORS=
 mac:
     find ../patches/libvpx -type f -print0 | sort -z | xargs -0 git apply
 
