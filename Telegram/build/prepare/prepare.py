@@ -453,8 +453,6 @@ stage('patches', """
     git clone https://github.com/desktop-app/patches.git
     cd patches
     git checkout 4519c85c924b9da81f29d4aac045886f896ee479
-win:
-    powershell -NoProfile -Command "[IO.File]::WriteAllText('build_libvpx_win.sh', [IO.File]::ReadAllText('build_libvpx_win.sh').Replace('make -j', 'sed -i s/msbuild.exe\ vpx.sln\ -m/msbuild.exe\ vpx.sln/g Makefile' + [char]10 + 'grep -q msbuild.exe\ vpx.sln\ -m Makefile && exit 1 || true' + [char]10 + 'make -j'))"
 """)
 
 stage('msys64', """
@@ -1062,12 +1060,7 @@ win64:
 winarm:
     SET "TOOLCHAIN=arm64-win64-vs17"
 win:
-depends:patches/build_libvpx_win.sh
-    SET "LIBVPX_SAVED_NUMBER_OF_PROCESSORS=%NUMBER_OF_PROCESSORS%"
-    SET NUMBER_OF_PROCESSORS=1
-    bash --login ../patches/build_libvpx_win.sh
-    SET "NUMBER_OF_PROCESSORS=%LIBVPX_SAVED_NUMBER_OF_PROCESSORS%"
-    SET LIBVPX_SAVED_NUMBER_OF_PROCESSORS=
+    bash --login "%ROOT_DIR%/Telegram/build/prepare/build_libvpx_win_serial.sh"
 mac:
     find ../patches/libvpx -type f -print0 | sort -z | xargs -0 git apply
 
