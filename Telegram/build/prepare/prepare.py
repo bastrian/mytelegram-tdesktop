@@ -454,8 +454,7 @@ stage('patches', """
     cd patches
     git checkout 4519c85c924b9da81f29d4aac045886f896ee479
 win:
-    powershell -NoProfile -Command "[IO.File]::WriteAllText('build_libvpx_win.sh', [IO.File]::ReadAllText('build_libvpx_win.sh').Replace('msbuild.exe vpx.sln -m', 'msbuild.exe vpx.sln'))"
-    findstr /C:"msbuild.exe vpx.sln -m" build_libvpx_win.sh >nul && exit /b 1 || ver >nul
+    powershell -NoProfile -Command "[IO.File]::WriteAllText('build_libvpx_win.sh', [IO.File]::ReadAllText('build_libvpx_win.sh').Replace('make -j', 'sed -i s/msbuild.exe\ vpx.sln\ -m/msbuild.exe\ vpx.sln/g Makefile' + [char]10 + 'grep -q msbuild.exe\ vpx.sln\ -m Makefile && exit 1 || true' + [char]10 + 'make -j'))"
 """)
 
 stage('msys64', """
