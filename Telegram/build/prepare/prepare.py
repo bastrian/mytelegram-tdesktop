@@ -453,6 +453,8 @@ stage('patches', """
     git clone https://github.com/desktop-app/patches.git
     cd patches
     git checkout 4519c85c924b9da81f29d4aac045886f896ee479
+win:
+    powershell -Command "(Get-Content build_libvpx_win.sh -Raw) -replace 'msbuild.exe vpx.sln -m', 'msbuild.exe vpx.sln' | Set-Content build_libvpx_win.sh -Encoding ASCII"
 """)
 
 stage('msys64', """
